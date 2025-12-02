@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Índice de Mensagens - ZapRun</title>
+    <link rel="icon" type="image/x-icon" href="build/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background-image: url('build/favicon.ico');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff6b35;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #856404;
+            text-align: left;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #ff6b35;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-button:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .example-card {
+            background: white;
+            border-radius: 6px;
+            padding: 12px 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .example-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .card-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .emoji-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .emoji-badge.with {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .emoji-badge.without {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .message-content {
+            background: #f8f9fa;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border-left: 3px solid #ff6b35;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            color: #333;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .variable {
+            background: #fff3cd;
+            color: #856404;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-button {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .copy-button:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+        }
+
+        .copy-button:active {
+            transform: translateY(0);
+        }
+
+        .copy-button.copied {
+            background: #28a745;
+        }
+
+        .section-title {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title h2 {
+            color: #ff6b35;
+            font-size: 1.4em;
+        }
+
+        .preview-button {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.65em;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+
+        .preview-button:hover {
+            background: #20ba5a;
+            transform: scale(1.05);
+        }
+
+        .preview-button::before {
+            content: '💬';
+            font-size: 0.85em;
+        }
+
+        .whatsapp-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .whatsapp-modal.active {
+            display: flex;
+        }
+
+        .whatsapp-preview {
+            background: #ece5dd;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .whatsapp-header {
+            background: #075e54;
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .whatsapp-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #25d366;
+            background-image: url('build/favicon.ico');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .whatsapp-header-info {
+            flex: 1;
+        }
+
+        .whatsapp-header-info h3 {
+            margin: 0;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .whatsapp-header-info p {
+            margin: 2px 0 0 0;
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        .whatsapp-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .whatsapp-messages {
+            padding: 16px;
+            flex: 1;
+            overflow-y: auto;
+            background: #ece5dd;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="%23d4edda" stroke-width="0.5" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        }
+
+        .whatsapp-message {
+            background: #dcf8c6;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            max-width: 85%;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            font-size: 0.9em;
+            line-height: 1.4;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .whatsapp-message strong {
+            font-weight: bold;
+        }
+
+        .whatsapp-message em {
+            font-style: italic;
+        }
+
+        .whatsapp-message s {
+            text-decoration: line-through;
+        }
+
+        .whatsapp-message code {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        .whatsapp-message-time {
+            text-align: right;
+            font-size: 0.7em;
+            color: #667781;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+
+            .examples-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .subtitle {
+                font-size: 0.85em;
+            }
+
+            .info-box {
+                font-size: 0.8em;
+                padding: 8px 12px;
+            }
+
+            .tab-button {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+
+            .example-card {
+                padding: 10px 12px;
+            }
+
+            .message-content {
+                font-size: 0.8em;
+                max-height: 250px;
+            }
+
+            .preview-button {
+                font-size: 0.65em;
+                padding: 3px 6px;
+            }
+
+            .whatsapp-preview {
+                width: 95%;
+                max-height: 90vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Exemplos de Mensagens que você pode utilizar</h1>
+            <p class="subtitle">Mensagens para Orçamento, Pedido e Cliente - Varejo de Materiais de Construção</p>
+            <div class="info-box">
+                <strong>ℹ️ IMPORTANTE: Exemplos de Mensagens que Podem Ser Utilizadas</strong>
+                Estas são mensagens de exemplo que podem ser copiadas e utilizadas no sistema. 
+                As variáveis como $Cli, $Vndr, $Orc, $Vlr, $Email, $Ped, $Dt, $Itns, $Fone serão substituídas automaticamente pelos dados reais quando configuradas no sistema.
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showSection('orcamento')">Orçamento</button>
+            <button class="tab-button" onclick="showSection('pedido')">Pedido</button>
+            <button class="tab-button" onclick="showSection('cliente')">Cliente</button>
+        </div>
+
+        <!-- Seção Orçamento -->
+        <div id="orcamento" class="section active">
+            <div class="section-title">
+                <h2>Mensagens de Orçamento</h2>
+            </div>
+            <div class="examples-grid">
+                <!-- Orçamento 1 - Com Emoji - Formal -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 1 - Formal</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">Olá *$Cli*! 👋
+
+Recebemos seu orçamento de materiais de construção.
+
+📋 Detalhes:
+$Orc
+Vendedor: $Vndr
+Valor Total: $Vlr
+
+📦 Produtos:
+$Itns
+
+Estamos à disposição para esclarecer dúvidas.
+
+Atenciosamente,
+Equipe de Vendas</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Orçamento 2 - Com Emoji - Amigável -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 2 - Amigável</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">Oi *$Cli*! 😊
+
+Que bom ter você aqui! Seu orçamento acabou de chegar:
+
+$Orc
+💰 Valor: $Vlr
+👤 Vendedor: $Vndr
+
+📦 Produtos:
+$Itns
+
+Qualquer coisa, é só chamar! 🚀
+
+Abraços!</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Orçamento 3 - Com Emoji - Promocional -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 3 - Promocional</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, seu orçamento está pronto! 🎉
+
+$Orc
+💵 Total: $Vlr
+👨‍💼 Atendido por: $Vndr
+
+📦 Produtos:
+$Itns
+
+🔥 OFERTA ESPECIAL:
+- Parcelamento sem juros no cartão
+- Frete grátis acima de R$ 500
+- Desconto para pagamento à vista
+
+Não perca essa oportunidade! ⚡
+
+Fale com a gente! 📞</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Orçamento 4 - Sem Emoji - Formal -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 4 - Formal</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">Prezado(a) *$Cli*,
+
+Informamos que recebemos seu orçamento de materiais de construção.
+
+Detalhes:
+$Orc
+Vendedor responsável: $Vndr
+Valor total: $Vlr
+
+Produtos:
+$Itns
+
+Caso tenha dúvidas ou precise de ajustes, nossa equipe está à disposição.
+
+Atenciosamente,
+Equipe Comercial</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Orçamento 5 - Sem Emoji - Amigável -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 5 - Amigável</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">Olá *$Cli*!
+
+Seu orçamento de materiais para sua obra está pronto!
+
+$Orc
+Valor: $Vlr
+Vendedor: $Vndr
+
+Produtos:
+$Itns
+
+Estamos aqui para ajudar no que precisar. Pode contar conosco!
+
+Abraços!</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Orçamento 6 - Sem Emoji - Promocional -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 6 - Promocional</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, seu orçamento está disponível!
+
+$Orc
+Total: $Vlr
+Atendido por: $Vndr
+
+Produtos:
+$Itns
+
+CONDIÇÕES ESPECIAIS:
+- Parcelamento sem juros
+- Frete grátis para compras acima de R$ 500
+- Desconto especial para pagamento à vista
+
+Aproveite essas condições exclusivas!
+
+Entre em contato conosco para finalizar seu pedido.</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Orçamento 7 - Com Emoji - Simplista -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 7 - Simplista</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli* 📋
+
+$Orc
+
+$Itns
+
+💰 Total: $Vlr</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Orçamento 8 - Sem Emoji - Minimalista -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 8 - Minimalista</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*
+
+$Orc
+
+$Itns
+
+Total: $Vlr</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Pedido -->
+        <div id="pedido" class="section">
+            <div class="section-title">
+                <h2>Mensagens de Pedido</h2>
+            </div>
+            <div class="examples-grid">
+                <!-- Pedido 1 - Com Emoji - Confirmação -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 1 - Confirmação</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, confirmamos seu pedido! ✅
+
+$Ped
+📅 Data: $Dt
+👤 Vendedor: $Vndr
+💰 Valor: $Vlr
+
+📦 Produtos:
+$Itns
+
+Seu pedido está sendo processado e em breve você receberá mais informações sobre a entrega.
+
+Obrigado pela confiança! 🙏</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Pedido 2 - Com Emoji - Agradecimento -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 2 - Agradecimento</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, MUITO OBRIGADO! 🎉
+
+Seu pedido foi registrado com sucesso:
+
+$Ped
+Data: $Dt
+Vendedor: $Vndr
+Total: $Vlr
+
+Itens do pedido:
+$Itns
+
+Estamos preparando tudo com muito cuidado para sua obra! 🏗️
+
+Em breve entraremos em contato sobre a entrega.
+
+Obrigado por escolher a gente! ❤️</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Pedido 3 - Com Emoji - Instrução -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 3 - Instrução</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, pedido confirmado! 📋
+
+Detalhes:
+$Ped
+📆 Data: $Dt
+👨‍💼 Vendedor: $Vndr
+💵 Valor: $Vlr
+
+Seus produtos:
+$Itns
+
+PRÓXIMOS PASSOS:
+1️⃣ Aguarde nosso contato para agendar a entrega
+2️⃣ Tenha em mãos o número do pedido: $Ped
+3️⃣ Em caso de dúvidas, entre em contato conosco
+
+Tudo certo para sua construção! 🚧</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Pedido 4 - Sem Emoji - Confirmação -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 4 - Confirmação</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, confirmamos o recebimento do seu pedido.
+
+$Ped
+Data: $Dt
+Vendedor: $Vndr
+Valor total: $Vlr
+
+Itens solicitados:
+$Itns
+
+Seu pedido está em processamento. Em breve entraremos em contato para informar sobre o prazo de entrega.
+
+Agradecemos sua preferência.</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Pedido 5 - Sem Emoji - Agradecimento -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 5 - Agradecimento</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, OBRIGADO pelo seu pedido!
+
+Detalhes do pedido:
+$Ped
+Data: $Dt
+Vendedor: $Vndr
+Valor: $Vlr
+
+Produtos:
+$Itns
+
+Estamos trabalhando para garantir que todos os materiais cheguem na sua obra com qualidade e no prazo.
+
+Nossa equipe entrará em contato em breve para confirmar os detalhes da entrega.
+
+Muito obrigado pela confiança em nosso trabalho!</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Pedido 6 - Sem Emoji - Instrução -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 6 - Instrução</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, seu pedido foi registrado com sucesso.
+
+INFORMAÇÕES DO PEDIDO:
+$Ped
+Data: $Dt
+Vendedor: $Vndr
+Valor total: $Vlr
+
+ITENS:
+$Itns
+
+INSTRUÇÕES IMPORTANTES:
+- Guarde o número do pedido para acompanhamento
+- Aguarde nosso contato para agendamento da entrega
+- Em caso de dúvidas, entre em contato com nosso atendimento
+
+Estamos à disposição para qualquer esclarecimento.</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Pedido 7 - Com Emoji - Simplista -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 7 - Simplista</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli* ✅
+
+$Ped
+
+$Itns
+
+💰 Total: $Vlr</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Pedido 8 - Sem Emoji - Minimalista -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 8 - Minimalista</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*
+
+$Ped
+
+$Itns
+
+Total: $Vlr</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Cliente -->
+        <div id="cliente" class="section">
+            <div class="section-title">
+                <h2>Mensagens de Cliente</h2>
+            </div>
+            <div class="examples-grid">
+                <!-- Cliente 1 - Com Emoji - Boas-vindas -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 1 - Boas-vindas</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">Olá *$Cli*! 👋
+
+Seja muito bem-vindo(a) à nossa loja de materiais de construção!
+
+Para garantir um atendimento de qualidade, confirme seus dados:
+
+📧 E-mail: $Email
+📱 Telefone: $Fone
+
+Estamos prontos para ajudar na sua obra! 🏗️
+
+Qualquer coisa, é só chamar! 😊</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Cliente 2 - Com Emoji - Confirmação -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 2 - Confirmação</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">Oi *$Cli*! 😊
+
+Confirmando seus dados de cadastro:
+
+✅ Nome: $Cli
+📧 E-mail: $Email
+📞 Telefone: $Fone
+
+Seus dados estão corretos? Se precisar atualizar, é só nos avisar!
+
+Obrigado! 🙏</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Cliente 3 - Com Emoji - Atualização -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 3 - Atualização</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge with">Com Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, seus dados foram atualizados! ✨
+
+Confira:
+👤 Nome: $Cli
+📧 E-mail: $Email
+📱 Telefone: $Fone
+
+Agora você está sempre por dentro das melhores ofertas e novidades! 🎉
+
+Qualquer dúvida, estamos aqui! 💬</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Cliente 4 - Sem Emoji - Boas-vindas -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 4 - Boas-vindas</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">Olá *$Cli*!
+
+Seja bem-vindo(a) à nossa loja de materiais de construção!
+
+Para melhor atendê-lo, por favor confirme seus dados de contato:
+
+E-mail: $Email
+Telefone: $Fone
+
+Estamos à disposição para ajudar em sua obra.
+
+Atenciosamente,
+Equipe de Atendimento</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Cliente 5 - Sem Emoji - Confirmação -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 5 - Confirmação</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">Prezado(a) *$Cli*,
+
+Confirmamos o cadastro dos seus dados:
+
+Nome: $Cli
+E-mail: $Email
+Telefone: $Fone
+
+Por favor, confirme se os dados estão corretos. Caso precise atualizar alguma informação, entre em contato conosco.
+
+Obrigado!</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+
+                <!-- Cliente 6 - Sem Emoji - Atualização -->
+                <div class="example-card">
+                    <div class="card-header">
+                        <span class="card-title">Exemplo 6 - Atualização</span>
+                        <div class="card-header-actions">
+                            <span class="emoji-badge without">Sem Emoji</span>
+                            <button class="preview-button" onclick="showWhatsAppPreview(this)" title="Ver preview no WhatsApp">Preview</button>
+                        </div>
+                    </div>
+                    <div class="message-content">*$Cli*, seus dados foram atualizados com sucesso.
+
+Dados cadastrais:
+Nome: $Cli
+E-mail: $Email
+Telefone: $Fone
+
+Agora você receberá todas as informações importantes sobre pedidos, orçamentos e promoções em seus canais de contato.
+
+Estamos à disposição para qualquer esclarecimento.</div>
+                    <button class="copy-button" onclick="copyMessage(this)">Copiar Mensagem</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Preview do WhatsApp -->
+    <div id="whatsappModal" class="whatsapp-modal" onclick="if(event.target === this) closeWhatsAppPreview()">
+        <div class="whatsapp-preview" onclick="event.stopPropagation()">
+            <div class="whatsapp-header">
+                <div class="whatsapp-avatar"></div>
+                <div class="whatsapp-header-info">
+                    <h3>ZapRun</h3>
+                    <p>online</p>
+                </div>
+                <button class="whatsapp-close" onclick="closeWhatsAppPreview()">×</button>
+            </div>
+            <div class="whatsapp-messages" id="whatsappMessages">
+                <!-- Mensagens serão inseridas aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Esconde todas as seções
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active de todos os botões
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Mostra a seção selecionada
+            document.getElementById(sectionId).classList.add('active');
+
+            // Ativa o botão correspondente
+            event.target.classList.add('active');
+        }
+
+        function copyMessage(button) {
+            const card = button.closest('.example-card');
+            const messageContent = card.querySelector('.message-content');
+            const text = messageContent.textContent;
+
+            // Cria um elemento temporário para copiar
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            // Feedback visual
+            const originalText = button.textContent;
+            button.textContent = 'Copiado!';
+            button.classList.add('copied');
+
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('copied');
+            }, 2000);
+        }
+
+        function formatarWhatsApp(text) {
+            // Primeiro converte quebras de linha para um marcador temporário
+            text = text.replace(/\n/g, '{{BR}}');
+            
+            // Escapa HTML para segurança
+            text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            
+            // Formatações do WhatsApp (ordem importa - mais específicas primeiro)
+            // ```texto``` = monoespaçado (code)
+            text = text.replace(/```([^`]+)```/g, '<code>$1</code>');
+            
+            // *texto* = negrito (bold) - processa todas as ocorrências
+            text = text.replace(/\*([^*]+)\*/g, '<strong>$1</strong>');
+            
+            // _texto_ = itálico (italic)
+            text = text.replace(/_([^_]+)_/g, '<em>$1</em>');
+            
+            // ~texto~ = riscado (strikethrough)
+            text = text.replace(/~([^~]+)~/g, '<s>$1</s>');
+            
+            // Restaura quebras de linha como <br>
+            text = text.replace(/\{\{BR\}\}/g, '<br>');
+            
+            return text;
+        }
+
+        function showWhatsAppPreview(button) {
+            const card = button.closest('.example-card');
+            const messageContent = card.querySelector('.message-content');
+            let text = messageContent.textContent;
+            
+            // Dados fictícios para substituir as variáveis
+            const hoje = new Date();
+            const dia = String(hoje.getDate()).padStart(2, '0');
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            const ano = hoje.getFullYear();
+            const dataFormatada = `${dia}/${mes}/${ano}`;
+            
+            // Dados fictícios - ordem importa: mais específicas primeiro
+            const substituicoes = [
+                { padrao: '*$Cli*', valor: '*Pontual*' },
+                { padrao: '$Vndr!', valor: 'João Silva!' },
+                { padrao: '$Orc', valor: `Orçamento nº 1 em ${dataFormatada}` },
+                { padrao: '$Ped', valor: 'Pedido nº 1' },
+                { padrao: '$Dt', valor: dataFormatada },
+                { padrao: '$Vlr', valor: 'R$ 1.000,00' },
+                { padrao: '$Itns', valor: `• Cimento Portland 50kg - 10 unidades\n• Tijolo cerâmico 9x19x19cm - 500 unidades\n• Areia média - 2 m³\n• Brita nº 1 - 1,5 m³\n• Telha cerâmica - 200 unidades\n• Ferro CA-50 6,3mm - 50 barras` },
+                { padrao: '$Email', valor: 'pontual@exemplo.com.br' },
+                { padrao: '$email', valor: 'pontual@exemplo.com.br' },
+                { padrao: '$Fone', valor: '(51) 99999-9999' },
+                { padrao: '$Vndr', valor: 'João Silva' },
+                { padrao: '$Cli', valor: 'Pontual' }
+            ];
+            
+            // Substitui todas as variáveis pelos dados fictícios
+            substituicoes.forEach(({ padrao, valor }) => {
+                const regex = new RegExp(padrao.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                text = text.replace(regex, valor);
+            });
+            
+            // Aplica formatações do WhatsApp
+            const textFormatado = formatarWhatsApp(text);
+            
+            const modal = document.getElementById('whatsappModal');
+            const messagesContainer = document.getElementById('whatsappMessages');
+            
+            // Limpa mensagens anteriores
+            messagesContainer.innerHTML = '';
+            
+            // Cria a mensagem do WhatsApp
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'whatsapp-message';
+            messageDiv.innerHTML = textFormatado;
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'whatsapp-message-time';
+            const now = new Date();
+            timeDiv.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            
+            messageDiv.appendChild(timeDiv);
+            messagesContainer.appendChild(messageDiv);
+            
+            // Mostra o modal
+            modal.classList.add('active');
+        }
+
+        function closeWhatsAppPreview() {
+            const modal = document.getElementById('whatsappModal');
+            modal.classList.remove('active');
+        }
+
+        // Fechar modal com ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeWhatsAppPreview();
+            }
+        });
+
+        // Destacar variáveis
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageContents = document.querySelectorAll('.message-content');
+            messageContents.forEach(content => {
+                let html = content.innerHTML;
+                // Substitui variáveis por spans destacados
+                html = html.replace(/\$([A-Za-z]+)/g, function(match) {
+                    return '<span class="variable">' + match + '</span>';
+                });
+                content.innerHTML = html;
+            });
+        });
+    </script>
+</body>
+</html>
+
